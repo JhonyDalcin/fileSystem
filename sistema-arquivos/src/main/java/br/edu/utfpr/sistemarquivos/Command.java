@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 public enum Command {
@@ -43,17 +44,20 @@ public enum Command {
         }
 
         @Override
-        Path execute(Path path) {
+        Path execute(Path path) throws IOException {
+            if (parameters.length <= 1){
+                throw new UnsupportedOperationException("Invalid argument");
+            }
             var fileName = File.separator + parameters[1];
-            path = Path.of(path + fileName);
-            if (!Files.exists(path)){
+            var showFilepath = Path.of(path + fileName);
+            if (!Files.exists(showFilepath)){
                 throw new UnsupportedOperationException("This file does not exist.");
             }
-            if (Files.isDirectory(path)){
+            if (Files.isDirectory(showFilepath)){
                 throw new UnsupportedOperationException("This command should be used with files only.");
             }
-            if (path.getFileName().toString().endsWith(".txt")){
-                System.out.println("Openning...");
+            if (showFilepath.getFileName().toString().endsWith(".txt")){
+                System.out.println(Files.readAllLines(showFilepath).get(0));
             }else throw new UnsupportedOperationException("Extension not suported.");
 
             return path;
@@ -91,6 +95,9 @@ public enum Command {
 
         @Override
         Path execute(Path path) {
+            if (parameters.length <= 1){
+                throw new UnsupportedOperationException("Invalid argument");
+            }
             var fileName = File.separator + parameters[1];
             path = Path.of(path + fileName);
             if (!Files.exists(path)){
@@ -118,12 +125,15 @@ public enum Command {
 
         @Override
         Path execute(Path path) throws IOException {
+            if (parameters.length <= 1){
+                throw new UnsupportedOperationException("Invalid argument");
+            }
             var fileName = File.separator + parameters[1];
-            path = Path.of(path + fileName);
-            if (!Files.exists(path)){
+            var detailFilepath = Path.of(path + fileName);
+            if (!Files.exists(detailFilepath)){
                 throw new UnsupportedOperationException("File or Directory " + fileName + " does not exist.");
             }
-            BasicFileAttributeView view = Files.getFileAttributeView(path, BasicFileAttributeView.class);
+            BasicFileAttributeView view = Files.getFileAttributeView(detailFilepath, BasicFileAttributeView.class);
             BasicFileAttributes attributes = view.readAttributes();
             System.out.println("Is directory: " + attributes.isDirectory() + "\n" +
                                 "Size: " + attributes.size() + "\n" +
