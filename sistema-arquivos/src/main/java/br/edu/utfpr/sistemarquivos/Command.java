@@ -48,18 +48,8 @@ public enum Command {
             if (parameters.length <= 1){
                 throw new UnsupportedOperationException("Invalid argument");
             }
-            var fileName = File.separator + parameters[1];
-            var showFilepath = Path.of(path + fileName);
-            if (!Files.exists(showFilepath)){
-                throw new UnsupportedOperationException("This file does not exist.");
-            }
-            if (Files.isDirectory(showFilepath)){
-                throw new UnsupportedOperationException("This command should be used with files only.");
-            }
-            if (showFilepath.getFileName().toString().endsWith(".txt")){
-                System.out.println(Files.readAllLines(showFilepath).get(0));
-            }else throw new UnsupportedOperationException("Extension not suported.");
-
+            var fileReader = new FileReader();
+            fileReader.read(path, parameters);
             return path;
         }
     },
